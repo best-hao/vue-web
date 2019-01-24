@@ -2,13 +2,16 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/page/Home'
 import Near from '@/page/Near'
+import Fabu from '@/page/Fabu'
+import UserCenter from '@/page/UserCenter'
+import Task from '@/page/Task'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '',
       name: 'Home',
       component: Home
     },
@@ -21,6 +24,21 @@ export default new Router({
       path: '/near',
       name: 'Near',
       component: Near
+    },
+    {
+    	path:'/fabu',
+    	name:'Fabu',
+    	component:Fabu
+    },
+    {
+      path: '/user',
+      name: 'UserCenter',
+      component: UserCenter
+    },
+    {
+      path: '/task',
+      name: 'Task',
+      component: Task
     }
   ]
 })

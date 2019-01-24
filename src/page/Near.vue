@@ -1,55 +1,58 @@
 <template>
-  <div>
-    <header class="index-head fixed-head">
-      <div class="address">{{address}}</div>
-      <div class="flex-item">{{title}}</div>
-    </header>
-    
-    <div class="page">
-      <div class="group-list">
-        <nav class="between nav-between">
-          <div>{{nav.title}}</div>
-          <ul class="flex-row nav-list">
-            <li v-for='(item,index) in nav.list' :key='index'>{{item}}</li>
-          </ul>
-        </nav>
-        <div class="group-cont">
-          <ul>
-            <li v-for="(item,index) in group" :key="index">
-              <a href="##" class="between">
-                <div class="info flex-row">
-                  <img :src="item.img" alt="" class="group-img"/>
-                  <div>
-                    <div class="group-name over-1">{{item.name}}</div>
-                    <div class="group-title over-1">{{item.tit}}</div>
-                    <div class="group-dic over-1">{{item.dic}}</div>
-                  </div>
-                </div>
-                <div class="red-num" v-if="item.max">
-                  <img :src="item.red" alt="" />
-                  <div>
-                    <div v-if="item.use==item.max" class="none-red">已抢光</div>
-                    <div v-else>{{item.use}}/{{item.max}}</div>
-                  </div>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+  <div class="page">
+    <div>
+       <tab :line-width=3 active-color='#3cb333' v-model="first">
+        <tab-item class="vux-center" :selected="defult === item" v-for="(item, index) in topNav" @click="defult = item" :key="index">{{item.tit}}</tab-item>
+      </tab>
+      <swiper v-model="first" :show-dots="false" class="contant" height="100%">
+        <swiper-item v-for="(item, index) in topNav" :key="index">
+          <div class="group-list">
+            <nav class="between nav-between">
+              <div>{{nav.title}}</div>
+              <ul class="flex-row nav-list">
+                <li v-for='(item,index) in nav.list' :key='index'>{{item}}</li>
+              </ul>
+            </nav>
+            <div class="group-cont">
+              <ul>
+                <li v-for="(item,index) in group" :key="index">
+                  <a href="##" class="between">
+                    <div class="info flex-row">
+                      <img :src="item.img" alt="" class="group-img"/>
+                      <div>
+                        <div class="group-name over-1">{{item.name}}</div>
+                        <div class="group-title over-1">{{item.tit}}</div>
+                        <div class="group-dic over-1">{{item.dic}}</div>
+                      </div>
+                    </div>
+                    <div class="red-num" v-if="item.max">
+                      <img :src="item.red" alt="" />
+                      <div>
+                        <div v-if="item.use==item.max" class="none-red">已抢光</div>
+                        <div v-else>{{item.use}}/{{item.max}}</div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </swiper-item>
+      </swiper>
     </div>
-    
     <footer-guide :guide='guide'></footer-guide>
   </div>
 </template>
 
 <script>
 import FooterGuide from '../components/FooterGuide'
-/*import { Swiper } from 'vux'*/
+import { Tab, TabItem, Swiper, SwiperItem} from 'vux'
 export default {
   name: 'Near',
   data () {
     return {
+      first:0,
+      defult:'全部',
       guide:"1",
       title:"榴莲网",
       address:"西安",
@@ -58,33 +61,45 @@ export default {
       [{name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等各类烟酒零食饮料',dic:'距您3.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'},
       {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您1.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'},
       {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km',max:"100",use:'100',red:'../../static/images/hongbao01.png'},
-      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km'}]
+      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km'}],
+      topNav:[{tit:'全部'},{tit:'美食'},{tit:'电影'},{tit:'娱乐'},{tit:'KTV'},{tit:'周边游'}]
     }
   },
   components:{
-    FooterGuide
+    FooterGuide,
+    Tab, 
+    TabItem,
+    Swiper, 
+    SwiperItem
   }
 }
 </script>
 
 <style scoped>
-.index-head{
-  height: 80px;
-  width: 100%;
-  background: #fff;
-  color: #666;
-  line-height: 80px;
-  text-align: center;
-  position: relative;
-  font-size: 36px;
-}
-.fixed-head{
-  position: fixed;
-  top:0;
-  left: 0;
-}
 .page{
-  padding: 80px 0 128px 0;
+  background: #efefef;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  margin: auto;
+}
+.contant{
+  background: #fff;
+  position: absolute;
+  top:80px;
+  left: 0;
+  bottom: 128px;
+  width: 100%;
+  margin: auto;
+}
+.vux-tab-container{
+  height: 100% !important;
+  width: 100% !important;
+}
+.fixed-head .item{
+  height: 100%;
 }
 .address{
   position: absolute;

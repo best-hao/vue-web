@@ -10,8 +10,17 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
-
+    proxyTable: {
+    	//请求名字变量可以自己定义
+      '/api': {
+        target: 'http://msg.doadc.com/', // 请求的接口域名或IP地址，开头是http或https
+        // secure: false,  // 如果是https接口，需要配置这个参数
+        changeOrigin: false, // 是否跨域，如果接口跨域，需要进行这个参数配置
+        pathRewrite: {
+          '^/api': '/'//表示需要rewrite重写路径 
+        }
+      }
+    },		
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

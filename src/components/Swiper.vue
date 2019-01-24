@@ -1,14 +1,14 @@
 <template>
   <div class="carousel-wrap">
     <transition-group tag="ul" class='slide-ul'>
-      <li v-for="(list,index) in slideList" v-show="index===currentIndex" @mouseenter="stop" @mouseleave="go" :key="list.desc">
-        <a :href="list.clickUrl" >
-          <img :src="list.image">
+      <li v-for="(list,index) in slideList" v-show="index===currentIndex" @mouseenter="stop" @mouseleave="go" :key="list.title">
+        <a :href="list.skip_url" >
+          <img :src="list.imgurl">
         </a>
       </li>
     </transition-group>
     <div class="carousel-items">
-      <span v-for="(item,index) in slideList.length" :class="{'active':index===currentIndex}" @mouseover="change(index)"></span>
+      <span v-for="(item,index) in slideList.length" :key="index" :class="{'active':index===currentIndex}" @mouseover="change(index)"></span>
     </div>
   </div>
 </template>

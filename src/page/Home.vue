@@ -10,8 +10,8 @@
       <div class="categry">
         <div class="categry-item" v-for="(item,index) in categry" :key='index'>
           <a :href="item.href">
-            <img :src="item.img" alt=""/>
-            <span v-text="item.name"></span>
+            <img :src="item.type_img" alt=""/>
+            <span v-text="item.type_name"></span>
           </a>
         </div>
       </div>
@@ -55,6 +55,8 @@
 <script>
 import FooterGuide from '../components/FooterGuide'
 import Swiper from '../components/Swiper'
+import { getIndexBanner , getCategory } from '../api/http'
+
 export default {
   name: 'Home',
   data () {
@@ -62,24 +64,7 @@ export default {
   	  guide:"0",
       title:"榴莲网",
       address:"西安",
-      swiperList:
-        [
-          {
-            "clickUrl": "#",
-            "desc": "nhwc",
-            "image": "http://dummyimage.com/1745x492/f1d65b"
-          },
-          {
-            "clickUrl": "#",
-            "desc": "hxrj",
-            "image": "http://dummyimage.com/1745x492/40b7ea"
-          },
-          {
-            "clickUrl": "#",
-            "desc": "rsdh",
-            "image": '../../static/images/banner01.png'
-          }
-        ],
+      swiperList:[],
       categry:
         [{img:'../../static/images/cate01.png',name:'美食',href:'##'},
         {img:'../../static/images/cate01.png',name:'美食',href:'##'},
@@ -93,15 +78,28 @@ export default {
         {img:'../../static/images/cate01.png',name:'美食',href:'##'},],
       nav:{title:'推荐',list:['全部','商家','个人']},
       group:
-      [{name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等各类烟酒零食饮料',dic:'距您3.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'},
-      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您1.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'},
+      [{name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等各类烟酒零食饮料',dic:'距您3.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'},  
       {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km',max:"100",use:'100',red:'../../static/images/hongbao01.png'},
-      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km'}]
+      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km'},
+      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您1.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'}]
   	}
   },
   components:{
     FooterGuide,
     Swiper
+  },
+  mounted(){
+     getIndexBanner()
+     .then(res=>{
+     		this.swiperList = res.advs
+     })
+     getCategory()
+     .then(res=>{
+     		this.categry = res.l_type
+     })
+  },
+  methods:{
+  	
   }
 }
 </script>
