@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs';
 
 axios.defaults.baseURL = 'http://msg.doadc.com/';
 /**
@@ -14,6 +15,7 @@ export function fetch(url,params){
       params:params
     })
     .then(response => {
+    	console.log(response.data)
       resolve(response.data.data);
     })
     .catch(err => {
@@ -29,13 +31,16 @@ export function fetch(url,params){
  * @returns
  */
 
- export function post(url,data = {}){
+ export function post(url,data){
    return new Promise((resolve,reject) => {
-     axios.post(url,data)
-      .then(response => {
+	     axios.post(url,{
+	     	data:qs.stringify(data)
+	     })
+      .then(response => {      	
         resolve(response);
-      },err => {
-        reject(err)
+      })
+      .catch(err => {
+      	reject(err)
       })
    })
  }
@@ -43,3 +48,7 @@ export function fetch(url,params){
 export const getIndexBanner = () => fetch('index/index/getIndexBanner')
 /*首页分类图标*/
 export const getCategory = () => fetch('index/index/post_cate')
+/*发布*/
+export const sendPosts = params => fetch('index/posts/send_posts',params)
+
+export const sendPost = data => post('index/posts/send_posts',data)

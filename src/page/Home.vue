@@ -25,7 +25,7 @@
         <div class="group-cont">
           <ul>
             <li v-for="(item,index) in group" :key="index">
-              <a href="##" class="between">
+              <router-link class="between" to='/detail'>
                 <div class="info flex-row">
                   <img :src="item.img" alt="" class="group-img"/>
                   <div>
@@ -41,7 +41,7 @@
                     <div v-else>{{item.use}}/{{item.max}}</div>
                   </div>
                 </div>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
@@ -89,17 +89,19 @@ export default {
     Swiper
   },
   mounted(){
-     getIndexBanner()
+     this.$http.get('index/index/getIndexBanner')
      .then(res=>{
-     		this.swiperList = res.advs
+     		this.swiperList = res.data.data.advs
      })
-     getCategory()
+     this.$http.get('index/index/post_cate')
      .then(res=>{
-     		this.categry = res.l_type
+     		this.categry = res.data.data.l_type
      })
   },
   methods:{
-  	
+  	goTo(path){
+    	this.$router.push(path)
+  	}
   }
 }
 </script>

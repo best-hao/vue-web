@@ -5,6 +5,7 @@ import Near from '@/page/Near'
 import Fabu from '@/page/Fabu'
 import UserCenter from '@/page/UserCenter'
 import Task from '@/page/Task'
+import Detail from '@/page/Detail'
 
 Vue.use(Router)
 
@@ -39,6 +40,11 @@ export default new Router({
       path: '/task',
       name: 'Task',
       component: Task
+    },
+    {
+    	path: '/detail',
+    	name: 'Detail',
+    	component: Detail
     }
   ]
 })

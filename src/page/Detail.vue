@@ -1,6 +1,7 @@
 <template>
 <div>
 	<head-top :head-title='title'></head-top>
+	<div>eiee </div>
 </div>
 </template>
 
