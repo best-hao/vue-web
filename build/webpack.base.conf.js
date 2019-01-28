@@ -37,7 +37,11 @@ const webpackConfig = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
     }
-  },
+  },  
+	externals: {	 
+	    'AMap': 'AMap',	 
+	    'AMapUI': 'AMapUI' 
+	},
   module: {
     rules: [
       /*...(config.dev.useEslint ? [createLintingRule()] : []),*/

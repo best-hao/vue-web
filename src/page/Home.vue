@@ -23,22 +23,25 @@
           </ul>
         </nav>
         <div class="group-cont">
-          <ul>
+        	<div class="loading" v-if="loading">
+        		<inline-loading class="load"></inline-loading><span>加载中</span>
+        	</div>
+          <ul v-else>
             <li v-for="(item,index) in group" :key="index">
-              <router-link class="between" to='/detail'>
+              <router-link class="between" :to="{name:'detail',query:{tid:item.id}}">
                 <div class="info flex-row">
-                  <img :src="item.img" alt="" class="group-img"/>
+                  <img :src="item.main_img" alt="" class="group-img"/>
                   <div>
-                    <div class="group-name over-1">{{item.name}}</div>
-                    <div class="group-title over-1">{{item.tit}}</div>
-                    <div class="group-dic over-1">{{item.dic}}</div>
+                    <div class="group-name over-1">{{item.title}}</div>
+                    <div class="group-title over-1">{{item.sub_title}}</div>
+                    <div class="group-dic over-1">{{Number(item.lat).toFixed(2)}}km</div>
                   </div>
                 </div>
-                <div class="red-num" v-if="item.max">
-                  <img :src="item.red" alt="" />
+                <div class="red-num" v-if="item.red_packet_num">
+                  <img :src="red" alt=""/>
                   <div>
-                    <div v-if="item.use==item.max" class="none-red">已抢光</div>
-                    <div v-else>{{item.use}}/{{item.max}}</div>
+                    <div v-if="item.overplus_packet === 0" class="none-red">已抢光</div>
+                    <div v-else>{{item.overplus_packet}}/{{item.red_packet_num}}</div>
                   </div>
                 </div>
               </router-link>
@@ -47,7 +50,7 @@
         </div>
       </div>
     </div>
-    
+    <div class="container-map" v-if="mapShow"></div>
     <footer-guide :guide='guide'></footer-guide>
   </div>
 </template>
@@ -55,16 +58,26 @@
 <script>
 import FooterGuide from '../components/FooterGuide'
 import Swiper from '../components/Swiper'
-import { getIndexBanner , getCategory } from '../api/http'
+import { InlineLoading } from 'vux'
+//import { getIndexBanner , getCategory } from '../api/http'
+import AMap from 'AMap'
+/*import AMapUI from 'AMapUI'*/
+
 
 export default {
   name: 'Home',
   data () {
     return {
+    	loading:true,
+    	page:0,
+    	limit:10,
+    	mapShow:false,
+    	map: null,
   	  guide:"0",
       title:"榴莲网",
       address:"西安",
       swiperList:[],
+      red:'../../static/images/hongbao01.png',
       categry:
         [{img:'../../static/images/cate01.png',name:'美食',href:'##'},
         {img:'../../static/images/cate01.png',name:'美食',href:'##'},
@@ -77,16 +90,13 @@ export default {
         {img:'../../static/images/cate01.png',name:'美食',href:'##'},
         {img:'../../static/images/cate01.png',name:'美食',href:'##'},],
       nav:{title:'推荐',list:['全部','商家','个人']},
-      group:
-      [{name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等各类烟酒零食饮料',dic:'距您3.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'},  
-      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km',max:"100",use:'100',red:'../../static/images/hongbao01.png'},
-      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您3.2km'},
-      {name:'绿城烟酒商行',img:'../../static/images/shop01.png',tit:'各类烟酒零食饮料、办公用品等',dic:'距您1.3km',max:"100",use:'30',red:'../../static/images/hongbao01.png'}]
+      group:[]
   	}
   },
   components:{
     FooterGuide,
-    Swiper
+    Swiper,
+    InlineLoading
   },
   mounted(){
      this.$http.get('index/index/getIndexBanner')
@@ -96,17 +106,86 @@ export default {
      this.$http.get('index/index/post_cate')
      .then(res=>{
      		this.categry = res.data.data.l_type
+     })     
+     this.map = new AMap.Map('container-map', {
+	      resizeEnable: true,
+	      zoom: 15,
+	      viewMode: '2D',
+	      zooms: [4, 18]
      })
+     this.thisLocation()
   },
   methods:{
   	goTo(path){
     	this.$router.push(path)
-  	}
+  	},
+    thisLocation () {
+      this.map.plugin('AMap.Geolocation', () => {
+        let geolocation = new AMap.Geolocation({
+          // 是否使用高精度定位，默认：true
+          enableHighAccuracy: true,
+          // 设置定位超时时间，默认：无穷大
+          timeout: 10000,
+          // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+          buttonOffset: new AMap.Pixel(10, 20),
+          //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+          zoomToAccuracy: false,
+          //  定位按钮的排放位置,  RB表示右下
+          buttonPosition: 'RB'
+        })
+        this.map.addControl(geolocation)
+        geolocation.getCurrentPosition()
+        AMap.event.addListener(geolocation, 'complete', (data) => {
+          console.log(data)
+          this.citycode = data.addressComponent.cityCode
+          this.thisPosition = data.position
+          this.thisPosition.message = data.formattedAddress
+          this.chosePosition = this.thisPosition
+          localStorage.setItem("city",data.addressComponent.city)
+          localStorage.setItem("addr",data.position.message)
+          localStorage.setItem("lat",data.position.lat)
+          localStorage.setItem("lng",data.position.lng)
+          let promas ={
+          		lat:data.position.lat,
+          		lng:data.position.lat,
+          		page:this.page,
+          		limit:this.limit
+          }
+          this.$http.get('index/index/getIndexPosts',promas)
+			    .then(res=>{
+			    		if(res.data.code === 100){
+			    			 this.group = res.data.data.post_list
+			    		}else{
+			    			 alert(res.data.msg)
+			    		}
+			    		this.loading = false
+			     		console.log(res)
+			    })
+          /* 画圆 */
+          //this.cancelLocation()
+          //this.addCircle()
+          /* 拖拽选址 */
+          //this.positionPicker()
+        })
+        AMap.event.addListener(geolocation, 'error', function (data) {
+          alert('定位失败')
+        })
+      })
+  	}     
   }
 }
 </script>
 
 <style scoped>
+.loading{
+	line-height: 100px;
+	font-size: 28px;
+}
+.load{
+	margin-right: 10px;
+	width: 40px;
+	height: 40px;
+}
 .index-head{
   height: 80px;
   width: 100%;

@@ -43,7 +43,7 @@ export default new Router({
     },
     {
     	path: '/detail',
-    	name: 'Detail',
+    	name: 'detail',
     	component: Detail
     }
   ]

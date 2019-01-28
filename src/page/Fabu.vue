@@ -32,8 +32,9 @@
 			</div>					
 		</div>
 		
-		<div class="nav between">
-			<div><span class="iconfont icon-fujin"></span> <span class="address">{{addr}}</span></div>
+		<div class="nav flex-row">
+			<div><span class="iconfont icon-fujin"></span></div>
+			<div class="address">{{addr}}</div>
 		</div>
 		
 		<div class="nav between">
@@ -79,10 +80,13 @@ export default {
 	data(){
 		return{
 			typeId:"1",
+			lat:"",
+			lng:"",
+			city:"",
+			addr:"",
 			toast:false,
 			toastType:"warn",
 			toastTitle:"",
-			addr:"陕西省西安市碑林区南稍门中贸广场",
 			guide:"2",
 			title:"发布广告",
 			footerTitle:"确认发布",
@@ -97,6 +101,7 @@ export default {
 			contant:"",
 			file:"",
 			list:[],
+			imgList:[],
 			options: {
 		        getThumbBoundsFn (index) {		          
 		          let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]		          
@@ -108,7 +113,7 @@ export default {
 		}
 	},
 	mounted(){
-     
+     	this.getAddr()
   	},
   	directives: {
     	TransferDom
@@ -132,13 +137,17 @@ export default {
 		send:function(){
 			let data = {
 				type_id:this.typeId,
+				city:this.city,
+				lat:this.lat,
+				lng:this.lng,
 				title:this.fabuTitle,
 				sub_title:this.secendTitle,
 				content:this.contant,
-				red_packet_num:this.numDe,
-				red_packet_limit:this.moneyDe,
-				resources:this.list,
-				addr:this.addr
+				red_packet_num:this.isRed?this.numDe:"0",
+				red_packet_limit:this.isRed?this.moneyDe:"0",
+				resources:this.imgList,
+				addr:this.addr,
+				has_red_packet:this.isRed?"1":"0"
 			}
 		    this.$http.post("index/posts/send_posts",qs.stringify(data))
 		    .then(res=>{
@@ -162,10 +171,15 @@ export default {
 		    		msrc:res.data.url,
 		    		src:res.data.url
 		    	}
+		    	let imgObj = {
+		    		res_type : "1",
+		    		res_url:res.data.url
+		    	}
 		    	if(res.data.code !=100){
 		    		alert(res.data.msg)
 		    	}else{
 		    		this.list.push(obj)
+		    		this.imgList.push(imgObj)
 		    		alert(res.data.msg)
 		    	}	    	
 		    })
@@ -175,6 +189,12 @@ export default {
 	    },
 	    show (index) {
 	      this.$refs.previewer.show(index)
+	    },
+	    getAddr(){
+	    	this.addr = localStorage.getItem("addr")
+	    	this.lat = localStorage.getItem("lat")
+	    	this.lng = localStorage.getItem("lng")
+	    	this.city = localStorage.getItem("city")
 	    }
 		
 	}
@@ -280,12 +300,16 @@ input:focus, textarea:focus {
 	height: 190px;
 }
 .icon-fujin{
-	margin-right: 20px;
 	font-size: 35px;
 	color: #3cb333;
 }
 .address{
 	font-size: 26px;
+	flex: 1;
+	min-width: 0;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 .check-d{
 	margin: 0;

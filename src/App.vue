@@ -3,7 +3,7 @@
     <transition name="router-fade" mode="out-in">
     	<keep-alive>
     		<router-view/>
-    	</keep-alive>     
+    	</keep-alive> 
     </transition>
   </div>
 </template>
