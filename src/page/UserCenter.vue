@@ -9,26 +9,34 @@
 		<div class="user-info flex-row">
 			<img src="" alt="" class="user-header"/>
 			<div>
-				<div class="phone">{{phone}}</div>
+				<div class="phone" @click="bindPhone">{{phone}}</div>
 				<div class="flex-row"><span class="row-item">我的账户</span><span class="row-item">已签到</span></div>
 			</div>
 		</div>
 		
 		<div class="collect flex-row">
-			<div class="collect-item flex-clum" v-for="(item,index) in collect" :key="index">
-				<span class="iconfont" :class="item.font"></span>
-				<span>{{item.name}}</span>
+			<div class="collect-item flex-clum" @click="link(collect.path)">
+				<span class="iconfont" :class="collect.font"></span>
+				<span>{{collect.name}}</span>
+			</div>
+			<div class="collect-item flex-clum" @click="link(like.path)">
+				<span class="iconfont" :class="like.font"></span>
+				<span>{{like.name}}</span>
+			</div>
+			<div class="collect-item flex-clum" @click="link(pay.path)">
+				<span class="iconfont" :class="pay.font"></span>
+				<span>{{pay.name}}</span>
 			</div>
 		</div>
-		<nav class="nav-order between">
+		<nav class="nav-order between" @click="link(orderPath)">
 			<div>我的订单</div>
 			<div class="last">全部订单</div>
 		</nav>
-		<div class="collect flex-row">
+		<div class="collect flex-row" @click="link(orderPath)">
 			<div class="collect-item flex-clum" v-for="(item,index) in order" :key="index">
 				<span class="iconfont" :class="item.font"></span>
 				<span>{{item.name}}</span>
-			</div>
+			</div>			
 		</div>
 		
 		<nav class="nav-order between">
@@ -64,17 +72,16 @@ export default {
 			guide:"4",
 			title:"个人中心",
 			phone:"188******47",
-			collect:[
-				{name:"我的收藏",font:"icon-favor"},
-				{name:"我的点赞",font:"icon-appreciate"},
-				{name:"消费中心",font:"icon-send"}
-			],
+			collect:{name:"我的收藏",font:"icon-favor",path:'/collect'},
+			like:{name:"我的点赞",font:"icon-appreciate",path:'/like'},
+			pay:{name:"消费中心",font:"icon-send",path:'/pay'},
 			order:[
 				{name:"待付款",font:"icon-pay"},
 				{name:"待使用",font:"icon-send"},
 				{name:"退货退款",font:"icon-deliver"},
 				{name:"评价晒单",font:"icon-like"}
 			],
+			orderPath:"/order",
 			list:[
 				{name:"我的资产"},
 				{name:"我的好友"},
@@ -90,6 +97,14 @@ export default {
 	},
 	components:{
 		FooterGuide
+	},
+	methods:{
+		bindPhone(){
+			this.$router.push('/bind')
+		},
+		link(path){
+			this.$router.push(path)		
+		}
 	}
 }
 </script>
